@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import cn.jhc.um.generator.PathGenerator;
-import cn.jhc.um.util.Constants;
 import cn.jhc.um.util.ConstraintChecker;
 import static cn.jhc.um.util.Constants.*;
 
@@ -36,34 +35,39 @@ public class UploadServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json; charset=UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
 		final ServletContext servletContext = request.getServletContext();
-		Properties config = (Properties) servletContext.getAttribute(Constants.SC_KIND_CONFIG);
+		Properties config = (Properties) servletContext.getAttribute(SC_UM_CONFIG);
 		String uploadRoot = config.getProperty(UPLOAD_ROOT);
 
-		String subdir = request.getParameter("dir");
 		ConstraintChecker checker = (ConstraintChecker)servletContext.getAttribute(SC_CONSTRAINT_CHECKER);
-		File subDirectory = checker.checkSubDirectory(uploadRoot, subdir);
 
 		String destUrl = config.getProperty(DEST_URL_PREFIX);
-		destUrl += subdir + "/";
 
 		PathGenerator pathGenerator = (PathGenerator) servletContext.getAttribute(SC_PATH_GENERATOR);
 		
 		ResourceBundle bundle = ResourceBundle.getBundle("messages", request.getLocale());
+		
+	    String type = request.getParameter("type");
+	    String editorId = request.getParameter("editorid");
 		
 		Collection<Part> parts = null;
 		try {
 			parts = request.getParts();
 		} catch (IllegalStateException e) {
 			String pattern = bundle.getString(MSG_UPLOAD_EXCEEDED);
-			out.println(buildErrorMessage(
+			out.println(buildResponseScript(editorId, destUrl,
 					MessageFormat.format(pattern, 
 							config.getProperty(HUMAN_UPLOAD_FILE_SIZE_LIMIT),
 							config.getProperty(HUMAN_REQUEST_SIZE_LIMIT))));
 			return;
+		} catch (ServletException e) {
+			
+			
+		} catch (IOException e) {
+			
 		}
 		for (Part part : parts) {
 			String fileName = extractFileName(part);
@@ -71,7 +75,7 @@ public class UploadServlet extends HttpServlet {
 			// 检查扩展名
 			String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1)
 					.toLowerCase();
-			if( !checker.checkFileExtension(subdir, fileExt) ) {
+			if( !checker.checkFileExtension(fileExt) ) {
 				out.println(buildErrorMessage(bundle.getString(MSG_EXT_VIOLATED)));
 				return;
 			}
@@ -79,12 +83,12 @@ public class UploadServlet extends HttpServlet {
 			String path = pathGenerator.generate(request, fileName);
 			int last = path.lastIndexOf(File.separator);
 			if(last > 0) {
-				File lastDir = new File(subDirectory, path.substring(0, last));
+				File lastDir = new File(uploadRoot, path.substring(0, last));
 				if(!lastDir.exists())
 					lastDir.mkdirs();
 			}
 			
-			part.write(subDirectory.getAbsolutePath() + File.separator + path);
+			part.write(uploadRoot + File.separator + path);
 
 			out.println(buildSuccessMessage(destUrl +path));
 
@@ -106,6 +110,11 @@ public class UploadServlet extends HttpServlet {
 		return matcher.group(1);
 	}
 
+	private String buildResponseScript(String editorId, String url, String state) {
+		return "<script>parent.UM.getEditor('"+ editorId +"').getWidgetCallback('image')('" 
+				+ url + "','" + state + "')</script>";
+	}
+	
 	private String buildSuccessMessage(String url) {
 		return "{\"error\":0,\"url\":\"" + url+ "\"}";
 	}

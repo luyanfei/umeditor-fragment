@@ -3,7 +3,7 @@ package cn.jhc.um.util;
 import cn.jhc.um.generator.PathGenerator;
 
 /**
- * Constants used in ueditor-mini-fragment, most of them are configure file's property names.
+ * Constants used in umeditor-fragment, most of them are configure file's property names.
  * @author luyanfei
  *
  */
@@ -12,7 +12,7 @@ public interface Constants {
 	/**
 	 * Attribute name in ServletContext used for keep configure Properties object.
 	 */
-	public static final String SC_KIND_CONFIG = "umeditor_config";
+	public static final String SC_UM_CONFIG = "umeditor_config";
 	/**
 	 * Attribute name in ServletContext used for keep {@link PathGenerator} object.
 	 */
@@ -29,15 +29,7 @@ public interface Constants {
 	public static final String UPLOAD_ROOT = "upload_root";
 	public static final String UPLOAD_FILE_SIZE_LIMIT = "upload_file_size_limit";
 	public static final String UPLOAD_REQUEST_SIZE_LIMIT = "upload_request_size_limit";
-	public static final String IMG_DIR = "img_dir";
-	public static final String IMG_DIR_EXT = "img_dir_ext";
-	public static final String FLASH_DIR = "flash_dir";
-	public static final String FLASH_DIR_EXT = "flash_dir_ext";
-	public static final String MEDIA_DIR = "media_dir";
-	public static final String MEDIA_DIR_EXT = "media_dir_ext";
-	public static final String FILE_DIR = "file_dir";
-	public static final String FILE_DIR_EXT = "file_dir_ext";
-	public static final String ALLOWED_DIRS = "allowed_dirs";
+	public static final String ALLOWED_EXTS = "allowed_exts";
 	/**
 	 * Human readable file size limit, not configurable, but saved in properties object. 
 	 * @see UMInitializer

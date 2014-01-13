@@ -23,7 +23,7 @@ import static cn.jhc.um.util.Constants.*;
  * <ol>
  * <li> A properties file named "umeditor.properties" will be searched in classpath, configuration properties
  * in this file will be merged with default configuration properties. The Properties object will be kept
- * in ServletContext with the attribute name {@link Constants.SC_KIND_CONFIG}, other servlet will need these configuration
+ * in ServletContext with the attribute name {@link Constants.SC_UM_CONFIG}, other servlet will need these configuration
  * properties.</li>
  * <li> The directory for upload files will be checked, if it does not exist or cann't be written, a RuntimeException
  * will be thrown. These allowed subdirectories in upload root directory will be checked for existence, and
@@ -49,7 +49,7 @@ public class UMInitializer implements ServletContextListener {
 		computeHumanReadableSizeLimit(properties);
 		//for test
 		properties.list(System.err);
-		context.setAttribute(SC_KIND_CONFIG, properties);
+		context.setAttribute(SC_UM_CONFIG, properties);
 		checkUploadDirectories(properties);
 		PathGenerator pathGenerator = loadPathGenerator(properties);
 		context.setAttribute(SC_PATH_GENERATOR, pathGenerator);
@@ -133,12 +133,6 @@ public class UMInitializer implements ServletContextListener {
 		rootDir.mkdir();
 		if(!rootDir.isAbsolute() || !rootDir.exists() || !rootDir.canWrite())
 			throw new RuntimeException("Upload root directory: " + root + "does not exists or can not be written.");
-		//create allowed dirs
-		String[] allowedDirs = properties.getProperty(ALLOWED_DIRS).split(",");
-		for(String dir : allowedDirs) {
-			File t = new File(rootDir, dir);
-			if(!t.exists()) t.mkdir();
-		}
 	}
 
 	//TODO: image,flash,media,file should not be configured by client's property file.
@@ -169,7 +163,7 @@ public class UMInitializer implements ServletContextListener {
 
 		String uploadRoot = properties.getProperty(UPLOAD_ROOT);
 		if( uploadRoot == null) {
-			String defaultUploadRoot = context.getRealPath("/") + "attached/";
+			String defaultUploadRoot = context.getRealPath("/") + "upload/";
 			properties.setProperty(UPLOAD_ROOT, defaultUploadRoot);
 		}
 		else {
@@ -180,7 +174,7 @@ public class UMInitializer implements ServletContextListener {
 		
 		String destUrlPrefix = properties.getProperty(DEST_URL_PREFIX);
 		if(destUrlPrefix == null) {
-			String defaultPrefix = context.getContextPath() + "/attached/";
+			String defaultPrefix = context.getContextPath() + "/upload/";
 			properties.setProperty(DEST_URL_PREFIX, defaultPrefix);
 		}
 		else {
