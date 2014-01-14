@@ -95,5 +95,9 @@ public interface Constants {
 	public static final String MSG_WRONG_ENCTYPE = "wrong_enctype";
 	
 	public static final String MSG_IO_ERROR = "io_error";
-
+	/**
+	 * Configure option in umeditor.properties, this is the UMEditor's toolbar options.
+	 * Check umeditor_default.properties for default value.
+	 */
+	public static final String UM_TOOLBAR = "umeditor_toolbar";
 }
