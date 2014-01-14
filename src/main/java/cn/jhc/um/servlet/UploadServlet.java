@@ -51,6 +51,7 @@ public class UploadServlet extends HttpServlet {
 		ResourceBundle bundle = ResourceBundle.getBundle("messages", request.getLocale());
 		
 	    String type = request.getParameter("type");
+
 	    String editorId = request.getParameter("editorid");
 		
 		Collection<Part> parts = null;
@@ -64,10 +65,11 @@ public class UploadServlet extends HttpServlet {
 							config.getProperty(HUMAN_REQUEST_SIZE_LIMIT))));
 			return;
 		} catch (ServletException e) {
-			
-			
+			out.println(buildResponseScript(editorId, destUrl, bundle.getString(MSG_WRONG_ENCTYPE)));
+			return;
 		} catch (IOException e) {
-			
+			out.println(buildResponseScript(editorId, destUrl, bundle.getString(MSG_IO_ERROR)));
+			return;
 		}
 		for (Part part : parts) {
 			String fileName = extractFileName(part);
@@ -76,7 +78,7 @@ public class UploadServlet extends HttpServlet {
 			String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1)
 					.toLowerCase();
 			if( !checker.checkFileExtension(fileExt) ) {
-				out.println(buildErrorMessage(bundle.getString(MSG_EXT_VIOLATED)));
+				out.println(buildResponseScript(editorId, destUrl, bundle.getString(MSG_EXT_VIOLATED)));
 				return;
 			}
 
@@ -90,8 +92,12 @@ public class UploadServlet extends HttpServlet {
 			
 			part.write(uploadRoot + File.separator + path);
 
-			out.println(buildSuccessMessage(destUrl +path));
-
+		    if( type != null &&  "ajax".equals( type ) ){
+		        out.print( destUrl );
+		    }
+		    else {
+		    	out.println(buildResponseScript(editorId, destUrl + path, "SUCCESS"));
+		    }
 		}
 	}
 
@@ -113,13 +119,5 @@ public class UploadServlet extends HttpServlet {
 	private String buildResponseScript(String editorId, String url, String state) {
 		return "<script>parent.UM.getEditor('"+ editorId +"').getWidgetCallback('image')('" 
 				+ url + "','" + state + "')</script>";
-	}
-	
-	private String buildSuccessMessage(String url) {
-		return "{\"error\":0,\"url\":\"" + url+ "\"}";
-	}
-	
-	private String buildErrorMessage(String message) {
-		return "{\"error\":1,\"message\":\"" + message + "\"}";
 	}
 }

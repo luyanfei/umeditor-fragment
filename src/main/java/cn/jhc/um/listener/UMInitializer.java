@@ -3,7 +3,6 @@ package cn.jhc.um.listener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import javax.servlet.MultipartConfigElement;
@@ -19,19 +18,16 @@ import cn.jhc.um.util.ConstraintChecker;
 import static cn.jhc.um.util.Constants.*;
 
 /**
- * This is the ueditor-mini-fragment's initialize entrance. When ServletContext is initialized, some things will happen:
+ * This is the umeditor-fragment's initialize entrance. When ServletContext is initialized, some things will happen:
  * <ol>
  * <li> A properties file named "umeditor.properties" will be searched in classpath, configuration properties
  * in this file will be merged with default configuration properties. The Properties object will be kept
  * in ServletContext with the attribute name {@link Constants.SC_UM_CONFIG}, other servlet will need these configuration
  * properties.</li>
  * <li> The directory for upload files will be checked, if it does not exist or cann't be written, a RuntimeException
- * will be thrown. These allowed subdirectories in upload root directory will be checked for existence, and
- * will be created if necessary.</li>
+ * will be thrown. </li>
  * <li> PathGenerator object will be created from class name configured in properties file, and this object will be 
  * kept in ServletContext with the attribute name {@link Constants.SC_PATH_GENERATOR}.</li>
- * <li> A Jackson ObjectMapper object will be initialized, and this object will be kept in ServletContext with the 
- * attribute name {@link Constants.SC_OBJECT_MAPPER}.</li>
  * </ol>
  * @author luyanfei
  * @see cn.jhc.um.util.Constants
@@ -39,8 +35,6 @@ import static cn.jhc.um.util.Constants.*;
 
 @WebListener
 public class UMInitializer implements ServletContextListener {
-	
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -127,15 +121,12 @@ public class UMInitializer implements ServletContextListener {
 
 	private void checkUploadDirectories(Properties properties) {
 		String root = properties.getProperty(UPLOAD_ROOT);
-		if(!root.endsWith(File.separator))
-			root += File.separator;
 		File rootDir = new File(root);
-		rootDir.mkdir();
+		rootDir.mkdirs();
 		if(!rootDir.isAbsolute() || !rootDir.exists() || !rootDir.canWrite())
 			throw new RuntimeException("Upload root directory: " + root + "does not exists or can not be written.");
 	}
 
-	//TODO: image,flash,media,file should not be configured by client's property file.
 	private Properties readFromConfigFile(ServletContext context) {
 		ClassLoader loader = context.getClassLoader();
 		InputStream defaultConfig = loader.getResourceAsStream("umeditor_default.properties");
@@ -161,23 +152,27 @@ public class UMInitializer implements ServletContextListener {
 			}
 		}
 
+		String webUploadDir = properties.getProperty(DEFAULT_WEB_UPLOAD_DIR);
+		webUploadDir = webUploadDir == null ? "upload" : webUploadDir;
 		String uploadRoot = properties.getProperty(UPLOAD_ROOT);
 		if( uploadRoot == null) {
-			String defaultUploadRoot = context.getRealPath("/") + "upload/";
+			String defaultUploadRoot = context.getRealPath("/") + webUploadDir + File.separator;
 			properties.setProperty(UPLOAD_ROOT, defaultUploadRoot);
 		}
 		else {
-			//make sure upload root is ended with "/"
-			if(!uploadRoot.endsWith("/"))
-				properties.setProperty(UPLOAD_ROOT, uploadRoot + "/");
+			//make sure upload root is ended with seperator
+			if(!uploadRoot.endsWith(File.separator))
+				properties.setProperty(UPLOAD_ROOT, uploadRoot + File.separator);
 		}
 		
 		String destUrlPrefix = properties.getProperty(DEST_URL_PREFIX);
 		if(destUrlPrefix == null) {
-			String defaultPrefix = context.getContextPath() + "/upload/";
+			String defaultPrefix = context.getContextPath() + "/" + webUploadDir +"/";
 			properties.setProperty(DEST_URL_PREFIX, defaultPrefix);
 		}
 		else {
+			//prepend servlet context path
+			destUrlPrefix = context.getContextPath() + "/" + webUploadDir;
 			//make sure prefix end with "/"
 			if(!destUrlPrefix.endsWith("/")) {
 				properties.setProperty(DEST_URL_PREFIX, destUrlPrefix + "/");
