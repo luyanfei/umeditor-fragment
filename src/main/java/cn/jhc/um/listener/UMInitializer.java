@@ -13,6 +13,7 @@ import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.WebListener;
 
 import cn.jhc.um.generator.PathGenerator;
+import cn.jhc.um.servlet.UMEditorConfigServlet;
 import cn.jhc.um.servlet.UploadServlet;
 import cn.jhc.um.util.ConstraintChecker;
 import static cn.jhc.um.util.Constants.*;
@@ -85,6 +86,8 @@ public class UMInitializer implements ServletContextListener {
 		MultipartConfigElement mce = new MultipartConfigElement("", maxFileSize, maxRequestSize, 0);
 		uploadDynamic.setMultipartConfig(mce);
 		
+		ServletRegistration.Dynamic configDynamic = context.addServlet("configServlet", UMEditorConfigServlet.class);
+		configDynamic.addMapping("/umeditor/umeditor.config.js");
 	}
 
 	private PathGenerator loadPathGenerator(Properties properties) {
