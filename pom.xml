@@ -5,10 +5,24 @@
 	<artifactId>umeditor-fragment</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
+	<name>umeditor-fragment</name>
+	<description>
+	Web fragment wrapper for umeditor(https://github.com/campaign/umeditor). 
+	umeditor is the mini version of ueditor(http://ueditor.baidu.com/website/), which is a versatile rich text editor. 
+	umeditor has been used in http://tieba.baidu.com, and has proven to be an efficient editor. 
+	umeditor-fragment is a wrapper for umeditor, it use Servlet 3.0 techonology, 
+	and can be deployed as a single web fragment jar.
+	</description>
+	<url>https://github.com/luyanfei/umeditor-fragment</url>
+	<scm>
+		<connection>scm:git:git@github.com:luyanfei/umeditor-fragment.git</connection>
+		<developerConnection>scm:git:git@github.com:luyanfei/umeditor-fragment.git</developerConnection>
+		<url>git@github.com:luyanfei/kind-file-manager.git</url>
+	</scm>
 	<licenses>
 		<license>
-			<name>GNU GENERAL PUBLIC LICENSE Version 3</name>
-			<url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
