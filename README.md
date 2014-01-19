@@ -7,7 +7,13 @@ Web fragment wrapper for umeditor(https://github.com/campaign/umeditor). umedito
 2. Servlet 3.0+
 
 ## Maven
-
+```
+<dependency>
+    <groupId>cn.jhc</groupId>
+    <artifactId>umeditor-fragment</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
 ## Configuration file
 Put a property file named "umeditor.properties" in classpath of you web project, here is the sample code:
 ```
