@@ -33,12 +33,12 @@
                         parseInt($(editor.body).css("padding-left"))  -
                         parseInt($(editor.body).css("padding-right")));
                 }
-
+                var src = node.getAttribute("src");
                 return arr.push({
                     width: node.width,
                     height: node.height,
-                    _src: node.src,
-                    src: node.src
+                    _src: src,
+                    src: src
                 });
             });
 
