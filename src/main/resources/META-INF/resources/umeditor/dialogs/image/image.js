@@ -33,6 +33,7 @@
                         parseInt($(editor.body).css("padding-left"))  -
                         parseInt($(editor.body).css("padding-right")));
                 }
+                //node.src will substitute relative url with absolute url, we don't want it here. by luyanfei.
                 var src = node.getAttribute("src");
                 return arr.push({
                     width: node.width,
