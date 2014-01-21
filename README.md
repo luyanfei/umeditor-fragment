@@ -11,7 +11,7 @@ Web fragment wrapper for umeditor(https://github.com/campaign/umeditor). umedito
 <dependency>
     <groupId>cn.jhc</groupId>
     <artifactId>umeditor-fragment</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 ## Configuration file
