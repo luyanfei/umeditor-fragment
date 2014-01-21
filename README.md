@@ -39,3 +39,6 @@ To initialize umeditor, you need add some code in body:
 ```
 ## PathGenerator
 If user upload a file to server, the server should generate a depository path for this file. PathGenerator interface is used for this path generation. You can provide your own PathGenerator implementation.
+## Caution
+*** image.js is changed
+In order to keep relative url in img src attribute, some code in image.js is changed.
