@@ -16,7 +16,7 @@
 	<scm>
 		<connection>scm:git:git@github.com:luyanfei/umeditor-fragment.git</connection>
 		<developerConnection>scm:git:git@github.com:luyanfei/umeditor-fragment.git</developerConnection>
-		<url>git@github.com:luyanfei/kind-file-manager.git</url>
+		<url>git@github.com:luyanfei/umeditor-fragment.git</url>
 	</scm>
 	<licenses>
 		<license>
